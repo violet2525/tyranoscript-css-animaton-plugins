@@ -50,11 +50,11 @@ tf.mouth = [
 ]
 [endscript]
 ;目のアニメーション設定
-[blink_animation anime="&tf.ear" w="400" name="usagi" part="ear" s="5"]
+[fa_animation anime="&tf.ear" w="400" name="usagi" part="ear" s="5"]
 ;耳のアニメーション設定
-[blink_animation anime="&tf.eye" w="400" name="usagi" part="eye" s="6"]
+[fa_animation anime="&tf.eye" w="400" name="usagi" part="eye" s="6"]
 ;口のアニメーション設定
-[blink_animation anime="&tf.mouth" w="400" name="usagi" part="mouth" s="2"]
+[fa_animation anime="&tf.mouth" w="400" name="usagi" part="mouth" s="2"]
 
 
 ;メッセージレイヤ表示
@@ -64,28 +64,22 @@ tf.mouth = [
 クリックでキャラクターを表示し、目のアニメーション開始[p]
 
 ;キャラクター登場
-[chara_show name="usagi" left="0" top="10"]
-
-;目のアニメーションスタート（※[chara_show]の後に記述）
-[blink_start name="usagi" part="eye"]
+[fa_chara_show name="usagi" left="0" top="10"]
 
 クリックで耳のアニメーション開始[p]
 
-;耳のパーツをアニメーションパーツに変更し、アニメーション開始
-[chara_part  name="usagi" ear="4"]
-[blink_start name="usagi" part="ear"]
+;耳のパーツをアニメーションパーツに変更
+[fa_chara_part  name="usagi" ear="4"]
 
 クリックで口のアニメーション開始[p]
 
-;口のパーツをアニメーションパーツに変更し、アニメーション開始
-[chara_part  name="usagi" mouth="3"]
-[blink_start name="usagi" part="mouth"]
+;口のパーツをアニメーションパーツに変更
+[fa_chara_part  name="usagi" mouth="3"]
 
-クリックで口のアニメーションを停止し、アニメーションしないパーツに変更[p]
+クリックで口をアニメーションしないパーツに変更[p]
 
-;口のアニメーション停止、非アニメーションパーツに変更
-[blink_end name="usagi" part="mouth"]
-[chara_part name="usagi" mouth="2"]
+;口を非アニメーションパーツに変更
+[fa_chara_part name="usagi" mouth="2"]
 
 クリックで最初に戻ります。[p]
 [free layer="0" name="usagi"]
