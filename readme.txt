@@ -4,7 +4,7 @@
 
 
 【使い方】
-このテキストが入っているフォルダ（frameanimation）ごとティラノスクリプトの「data/others/plugin」フォルダに入れてください。
+「frameanimation」フォルダごとティラノスクリプトの「data/others/plugin」フォルダに入れてください。
 その後、first.ksに以下のとおり記述してください。
 
 ==========================
