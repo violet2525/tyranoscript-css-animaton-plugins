@@ -100,24 +100,35 @@ $("#frame-animation").html($("#frame-animation").html() + normal + webkit + mozi
 [macro name="fa_chara_show"]
 [iscript]
 //パーツのデフォルトID取得
-tf.blink_part = {}
-Object.keys(TYRANO.kag.stat.charas[mp.name]["_layer"]).forEach(function (p){
-    tf.blink_part[p] = TYRANO.kag.stat.charas[mp.name]["_layer"][p]["current_part_id"]
+mp.blink = {}
+mp.blink[mp.name] = {
+    part: {},
+    storage: {}
+}
+var part = TYRANO.kag.stat.charas[mp.name]["_layer"]
+//part指定ありの場合
+Object.keys(mp).forEach(function(p){
+    if(part[p]){
+        if(part[p][mp[p]] === undefined){
+            alert(p + "=" + mp[p] + "はありません") 
+            return false
+        }
+        part[p].current_part_id = mp[p]
+    }
 })
-//console.log(tf.blink_part)
+Object.keys(part).forEach(function (p){
+    mp.blink[mp.name].part[p] = part[p].current_part_id
+    mp.blink[mp.name].storage[p] = "./data/fgimage/" + part[p][mp.blink[mp.name].part[p]].storage
+})
 [endscript]
 [chara_show *]
 [iscript]
-Object.keys(tf.blink_part).forEach(function (p) {
-    $("." + mp.name + " img." + p).addClass(tf.blink_part[p])
-    var selecter = "." + mp.name + " img." + p + "." + tf.blink_part[p]
-    //srcは一旦data-srcに退避
-    var src = $(selecter).attr("src")
-    $(selecter).attr("data-src", src)
+Object.keys(mp.blink[mp.name].part).forEach(function (p) {
+    $("." + mp.name + " img." + p).addClass(mp.blink[mp.name].part[p])
+    var selecter = "." + mp.name + " img." + p + "." + mp.blink[mp.name].part[p]
+    $(selecter + "." + mp.blink[mp.name].part[p]).css("background",  "url(" + mp.blink[mp.name].storage[p] + ") 0 0 no-repeat")
     $(selecter).attr("src", f.frame_animation.blank_image)
-    $(selecter + "." + tf.blink_part[p]).css("background",  "url(" + src + ") 0 0 no-repeat")
 })
-delete tf.blink_part
 [endscript]
 [endmacro]
 
@@ -126,53 +137,70 @@ delete tf.blink_part
 ;------------------------------------
 [macro name="fa_chara_part"]
 [iscript]
-//各パーツのID取得
-tf.blink_part = {}
-tf.blink_storage = {}
-Object.keys(mp).forEach(function (p) {
-    if(p === "name" || p === "time" || p === "wait" || p === "allow_storage" || p === "*"){
-        // 何もしない
-    }else{
-        var part = tyrano.plugin.kag.stat.charas[mp.name]._layer[p]
-        var old_storage = part[part.current_part_id].storage
-
-        if(part[mp[p]] === undefined){
-            alert(p + "=" + mp[p] + "はありません") 
-            return false
+if($.find("." + mp.name).length == 0){
+    mp.is_none = true
+    Object.keys(mp).forEach(function (p) {
+        if(TYRANO.kag.stat.charas[mp.name]["_layer"][p] !== undefined){
+            TYRANO.kag.stat.charas[mp.name]["_layer"][p]["current_part_id"] = mp[p]
         }
-        tf.blink_part[p] = mp[p]
-        tf.blink_storage[p] = "./data/fgimage/" + part[mp[p]].storage
+    })
+}else{
+    if(mp.blink === undefined){
+        mp.blink = {}
+    }
+    //各パーツのID取得
+    mp.blink[mp.name] = {
+        part: {},
+        storage: {}
+    }
+    Object.keys(mp).forEach(function (p) {
+        var part = TYRANO.kag.stat.charas[mp.name]._layer[p]
+        if(part !== undefined){
+            var old_storage = "./data/fgimage/" + part[part.current_part_id].storage
 
-        var selecter = "." + mp.name + " img." + p
-        if($.find(selecter).length > 0){
-            tyrano.plugin.kag.preload(tf.blink_storage[p], function () {
-                //$(selecter).attr("src", tf.blink_storage[p])
-                $(selecter).attr("src", "./data/fgimage/" + old_storage)
-                $(selecter).css("background",  "none")
-                //余計なクラスを削除
-                var _class = $(selecter).attr("class")
-                var classlist = _class.split(" ")
-                for(var i = 0; i < classlist.length; i++){
-                    if(classlist[i] === p || classlist[i] === "part"){
-                        //何もしない
-                    }else{
-                        $(selecter).removeClass(classlist[i])
+            if(part[mp[p]] === undefined){
+                alert(p + "=" + mp[p] + "はありません") 
+                return false
+            }
+            mp.blink[mp.name].part[p] = mp[p]
+            mp.blink[mp.name].storage[p] = "./data/fgimage/" + part[mp[p]].storage
+
+            var selecter = "." + mp.name + " img." + p
+            if($.find(selecter).length > 0){
+                TYRANO.kag.preload(old_storage, function () {
+                    $(selecter).attr("src", old_storage)
+                    $(selecter).css("background",  "none")
+                    //余計なクラスを削除
+                    var _class = $(selecter).attr("class")
+                    var classlist = _class.split(" ")
+                    for(var i = 0; i < classlist.length; i++){
+                        if(classlist[i] === p || classlist[i] === "part"){
+                            //何もしない
+                        }else{
+                            $(selecter).removeClass(classlist[i])
+                        }
                     }
-                }
-            })
-        }
-    }  
-})
+                })
+            }
+        }  
+    })
+}
 [endscript]
-[chara_part *]
+[chara_part * cond="mp.is_none === undefined"]
 [iscript]
-Object.keys(tf.blink_part).forEach(function (p) {
-    $("." + mp.name + " img." + p).addClass(tf.blink_part[p])
-    var selecter = "." + mp.name + " img." + p + "." + tf.blink_part[p]
-    $(selecter).css("background",  "url(" + tf.blink_storage[p] + ") 0 0 no-repeat")
-    $(selecter).attr("src", f.frame_animation.blank_image)
-})
-//delete tf.blink_part
+if(mp.is_none !== undefined){
+    //何もしない
+}else{
+    var cnt = 0
+    Object.keys(mp.blink[mp.name].part).forEach(function (p) {
+        $("." + mp.name + " img." + p).addClass(mp.blink[mp.name].part[p])
+        var selecter = "." + mp.name + " img." + p + "." + mp.blink[mp.name].part[p]
+        var part = TYRANO.kag.stat.charas[mp.name]._layer[p]
+        var src = "./data/fgimage/" + part[part.current_part_id].storage
+        $(selecter).css("background",  "url(" + src + ") 0 0 no-repeat")
+        $(selecter).attr("src", f.frame_animation.blank_image)
+    })
+}
 [endscript]
 [endmacro]
 
