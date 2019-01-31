@@ -49,9 +49,9 @@ tf.mouth = [
     ["80%", 2],
 ]
 [endscript]
-;目のアニメーション設定
-[fa_animation anime="&tf.ear" w="400" name="usagi" part="ear" s="5" id="ddd"]
 ;耳のアニメーション設定
+[fa_animation anime="&tf.ear" w="400" name="usagi" part="ear" s="5" id="ddd"]
+;目のアニメーション設定
 [fa_animation anime="&tf.eye" w="400" name="usagi" part="eye" s="6" id="ccc"]
 ;口のアニメーション設定
 [fa_animation anime="&tf.mouth" w="400" name="usagi" part="mouth" s="2" id="ccc"]
@@ -64,7 +64,7 @@ tf.mouth = [
 クリックでキャラクターを表示し、目のアニメーション開始[p]
 
 ;キャラクター登場
-[fa_chara_show name="usagi" left="0" top="10"]
+[fa_chara_show name="usagi" left="0" top="10" ear="ddd"]
 
 ;目のアニメーションスタート（※[chara_show]の後に記述）
 ;[fa_start name="usagi" part="eye"]
